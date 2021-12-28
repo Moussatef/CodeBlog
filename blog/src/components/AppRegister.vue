@@ -112,8 +112,8 @@ export default {
       this.$store
         .dispatch("registerByEmailPassword", data)
         .then((res) => {
-          console.log(res.id);
-          this.creatUser(res.id);
+          console.log(res);
+          this.creatUser(res);
         })
         .catch((error) => {
           console.log(error);

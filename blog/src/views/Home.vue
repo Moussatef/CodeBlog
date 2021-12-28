@@ -1,24 +1,23 @@
 <template>
-  <h1>Home BLOG</h1>
+  <div>
+    <h1 class="text-center text-uppercase text-muted">
+      Welcom back to BLOG channel
+    </h1>
+    <AppCover />
+  </div>
 </template>
 
-<script>
-import { mapActions } from "vuex";
 
+
+<script>
+import AppCover from "@/components/AppCover.vue";
 export default {
   name: "Home",
-
-  components: {},
-  methods: {
-    ...mapActions(["sendData"]),
-    testing() {
-      this.$store.dispatch("sendData").then((res) => {
-        console.log(res.id);
-      });
-    },
+  computed: {},
+  components: {
+    AppCover,
   },
-  created() {
-    // this.testing();
-  },
+  methods: {},
+  created() {},
 };
 </script>

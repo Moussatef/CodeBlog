@@ -33,10 +33,6 @@
             >
               Login
             </v-btn>
-
-            
-
-            
           </v-form>
         </v-col>
       </v-row>
@@ -81,9 +77,8 @@ export default {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log(user);
-          this.$router.replace({name :'Home'})
-          
+          // console.log(user);
+          // this.$router.replace({name :'Home'})
         })
         .catch((error) => {
           const errorCode = error.code;
