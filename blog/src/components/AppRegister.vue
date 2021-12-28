@@ -6,7 +6,7 @@
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="first_name"
-              :rules="namelRules"
+              :rules="nameRules"
               label="First name"
               required
             ></v-text-field>
@@ -52,7 +52,7 @@
               color="success"
               class="mr-4 w-100"
               v-if="valid"
-              @click="validate"
+              @click="register"
             >
               Register
             </v-btn>
@@ -113,6 +113,7 @@ export default {
         .dispatch("registerByEmailPassword", data)
         .then((res) => {
           console.log(res.id);
+          this.creatUser(res.id);
         })
         .catch((error) => {
           console.log(error);

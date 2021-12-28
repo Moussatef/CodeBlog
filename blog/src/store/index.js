@@ -6,8 +6,12 @@ import {
   Timestamp,
   getFirestore,
   collection,
-  addDoc
+  addDoc,
 } from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword
+} from "firebase/auth";
 
 
 Vue.use(Vuex)
@@ -33,38 +37,36 @@ export default new Vuex.Store({
           }
         ).catch(error => reject(error));
       })
-
-
-
-      // console.log("Document written with ID: ", docRef.id);
-
-
-
     },
 
-    async registerByEmailPassword(data) {
+    async registerByEmailPassword({
+      commit
+    }, param) {
+      console.log(param.email);
       const auth = getAuth();
       return new Promise((resolve, reject) => {
-        createUserWithEmailAndPassword(auth, data.email, data.password)
+        createUserWithEmailAndPassword(auth, param.email, param.password)
           .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
             resolve(userCredential.user)
-            // ...
+
           })
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             reject(errorMessage)
-            // ..
+
           });
       })
     },
 
-    async createUser(data) {
+    async createUser({
+      commit
+    }, data) {
 
       return new Promise((resolve, reject) => {
-        addDoc(collection(db, "cities"), {
+        addDoc(collection(db, "users", data.id), {
           first_name: data.first_name,
           last_name: data.last_name,
           email: data.email,
