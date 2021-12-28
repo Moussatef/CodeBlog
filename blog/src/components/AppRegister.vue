@@ -2,16 +2,20 @@
   <div>
     <v-container class="grey lighten-5">
       <v-row class="text-center justify-center p-5">
-        <v-col md="5" :align-self="align">
+        <v-col md="5">
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
-              v-model="name"
-              :counter="10"
-              :rules="nameRules"
-              label="Name"
+              v-model="first_name"
+              :rules="namelRules"
+              label="First name"
               required
             ></v-text-field>
-
+            <v-text-field
+              v-model="last_name"
+              :rules="nameRules"
+              label="Last name"
+              required
+            ></v-text-field>
             <v-text-field
               v-model="email"
               :rules="emailRules"
@@ -43,28 +47,14 @@
               @click:append="show1 = !show1"
             ></v-text-field>
 
-            <v-checkbox
-              v-model="checkbox"
-              :rules="[(v) => !!v || 'You must agree to continue!']"
-              label="Do you agree?"
-              required
-            ></v-checkbox>
-
             <v-btn
               :disabled="!valid"
               color="success"
-              class="mr-4"
+              class="mr-4 w-100"
+              v-if="valid"
               @click="validate"
             >
-              Validate
-            </v-btn>
-
-            <v-btn color="error" class="mr-4" @click="reset">
-              Reset Form
-            </v-btn>
-
-            <v-btn color="warning" @click="resetValidation">
-              Reset Validation
+              Register
             </v-btn>
           </v-form>
         </v-col>
@@ -74,15 +64,17 @@
 </template>
 
 <script>
-import firebase from "firebase/app";
-import "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { mapActions } from "vuex";
+
 export default {
   data: () => ({
     valid: false,
     show1: false,
     valid_pass: false,
 
-    name: "",
+    first_name: "",
+    last_name: "",
     nameRules: [
       (v) => !!v || "Name is required",
       (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
@@ -94,9 +86,9 @@ export default {
     ],
     select: null,
     items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-    checkbox: false,
-    password_confirmation: null,
-    password: null,
+
+    password_confirmation: "",
+    password: "",
     rules: {
       required: (value) => !!value || "Required.",
       min: (v) => v.length >= 8 || "Min 8 characters",
@@ -106,22 +98,42 @@ export default {
 
   methods: {
     validate() {
-      this.$refs.form.validate();
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
+      if (this.$refs.form.validate()) {
+        this.register();
+      } else console.log("Error validation inputs");
     },
 
     register() {
-      firebase.auth.createUserWithEmailAndPassword(email, password);
+      const data = {
+        email: this.email,
+        password: this.password,
+      };
+
+      this.$store
+        .dispatch("registerByEmailPassword", data)
+        .then((res) => {
+          console.log(res.id);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
-  },
-  watch: {
-    password_confirmation: (value) => {
-      this.valid_pass = value != this.password ? false : true;
+
+    creatUser(id) {
+      const data = {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        email: this.email,
+        id: id,
+      };
+      this.$store
+        .dispatch("createUser", data)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

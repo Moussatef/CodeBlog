@@ -3,7 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import firebase from "firebase/app";
+import {
+  initializeApp
+} from "firebase/app";
+import {
+  getStorage
+} from "firebase/storage";
+import {
+  getFirestore
+} from "firebase/firestore";
 
 
 import 'jquery'
@@ -19,6 +27,8 @@ const firebaseConfig = {
 
   authDomain: "blog-video-feadd.firebaseapp.com",
 
+  databaseURL: "https://blog-video-feadd-default-rtdb.firebaseio.com",
+
   projectId: "blog-video-feadd",
 
   storageBucket: "blog-video-feadd.appspot.com",
@@ -27,12 +37,21 @@ const firebaseConfig = {
 
   appId: "1:630822024405:web:94fd156abc79b59a0fde5c"
 
+
 };
 
 
 // Initialize Firebase
 
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+
+
+
+
+// Use the shorthand notation to access the default project's Firebase services
+const defaultStorage = getStorage();
+
+
 
 
 Vue.config.productionTip = false

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar id="mynavi" app color="">
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -11,26 +11,28 @@
           width="40"
         />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <h1>BLOG</h1>
       </div>
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <div v-if="!isLogged">
+        <router-link class="mr-6 fs-5" color="primary" to="/login"
+          >Login</router-link
+        >
+        <router-link class="mr-6 fs-5" color="primary" to="/register"
+          >Register</router-link
+        >
+      </div>
+      <div v-else>
+        <router-link class="mr-6 fs-5" color="primary" to="/">Blog</router-link>
+        <router-link class="mr-6 fs-5" color="primary" to="/dashboard"
+          >Dashboard</router-link
+        >
+        <router-link class="mr-6 fs-5" color="primary" to="/logout"
+          >Logout</router-link
+        >
+      </div>
     </v-app-bar>
 
     <v-main>
@@ -40,29 +42,56 @@
 </template>
 
 <script>
-// import { useRouter, useRoute } from "vue-router";
-// import { onBeforeMount } from "vue";
-
-// import firebase from "firebase/app"
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default {
   name: "App",
-  setup() {
-    // onBeforeMount(() => {
-    //   firebase.auth().onAuthStateChanged((user) => {
-    //     if (!user) {
-    //       router.replace("/login");
-    //     } else if (route.path == "/login" || route.path == "/register") {
-    //       router.replace("/");
-    //     }
-    //   });
-    // });
+
+  created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        console.log(uid);
+        this.isLogged = true;
+        this.currentUser = user.email;
+      } else {
+        this.isLogged = false;
+        this.currentUser = false;
+      }
+    });
   },
-
-
-
   data: () => ({
+    isLogged: false,
+    currentUser: false,
     //
   }),
+  methods: {
+    // logoutEvent() {
+    //   const auth = getAuth();
+    //   signOut(auth)
+    //     .then(() => {
+    //       // Sign-out successful.
+    //     })
+    //     .catch((error) => {
+    //       // An error happened.
+    //     });
+    // },
+  },
 };
 </script>
+
+
+<style lang="scss" scoped>
+#mynavi a {
+  color: #444444;
+  text-decoration: none;
+  font-size: 18px;
+  // transition: 200ms;
+  &.router-link-exact-active {
+    color: #238a91;
+    border-bottom: 2px solid #238a91;
+    // transition: 200ms;
+  }
+}
+</style>

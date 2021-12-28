@@ -2,7 +2,7 @@
   <div>
     <v-container class="grey lighten-5">
       <v-row class="text-center justify-center p-5">
-        <v-col md="5" >
+        <v-col md="5">
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="email"
@@ -25,19 +25,18 @@
             <v-btn
               :disabled="!valid"
               color="success"
-              class="mr-4"
-              @click="validate"
+              class="mr-4 mt-8 w-100"
+              @click="
+                validate;
+                login(email, password);
+              "
             >
-              Validate
+              Login
             </v-btn>
 
-            <v-btn color="error" class="mr-4" @click="reset">
-              Reset Form
-            </v-btn>
+            
 
-            <v-btn color="warning" @click="resetValidation">
-              Reset Validation
-            </v-btn>
+            
           </v-form>
         </v-col>
       </v-row>
@@ -46,6 +45,8 @@
 </template>
 
 <script>
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 export default {
   data: () => ({
     valid: true,
@@ -61,7 +62,6 @@ export default {
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
-    
   }),
 
   methods: {
@@ -73,6 +73,23 @@ export default {
     },
     resetValidation() {
       this.$refs.form.resetValidation();
+    },
+
+    login(email, password) {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          this.$router.replace({name :'Home'})
+          
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorMessage);
+        });
     },
   },
 };
