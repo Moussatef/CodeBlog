@@ -1,3 +1,13 @@
+import {
+    doc,
+    setDoc,
+    getFirestore,
+    getDoc,
+} from "firebase/firestore";
+import {
+    getAuth,
+} from "firebase/auth";
+
 const state = {
     auth_User: null,
 

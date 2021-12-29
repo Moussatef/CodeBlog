@@ -6,12 +6,7 @@ import vuetify from './plugins/vuetify'
 import {
   initializeApp
 } from "firebase/app";
-import {
-  getStorage
-} from "firebase/storage";
-import {
-  getFirestore
-} from "firebase/firestore";
+
 
 
 import 'jquery'
@@ -42,16 +37,34 @@ const firebaseConfig = {
 
 };
 
+const app = initializeApp(firebaseConfig);
+import {
+  doc,
+  setDoc,
+  Timestamp,
+  getFirestore,
+  collection,
+  addDoc,
+  getDoc,
+} from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword
+} from "firebase/auth";
 
+import {
+  getStorage
+} from "firebase/storage";
 // Initialize Firebase
 
-const app = initializeApp(firebaseConfig);
+
 
 
 
 
 // Use the shorthand notation to access the default project's Firebase services
 const defaultStorage = getStorage();
+const db = getFirestore()
 
 
 Vue.use(ElementUI);

@@ -1,3 +1,8 @@
+import {
+    getAuth,
+    createUserWithEmailAndPassword
+} from "firebase/auth";
+
 const state = {
 
 }
