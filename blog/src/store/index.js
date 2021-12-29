@@ -15,20 +15,29 @@ import {
 } from "firebase/auth";
 
 
+
+import user from './models/user';
+import blog from './models/blog';
+import media from './models/media';
+import auth from './models/auth';
+
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    auth_User: null
+
+    blog_progression: null,
   },
   getters: {
-    auth_User: state => state.auth_User,
+
+    blog_progression: state => state.blog_progression,
 
 
   },
   mutations: {
 
-    setUser: (state, user) => (state.auth_User = user),
+
 
   },
   actions: {
@@ -52,75 +61,51 @@ export default new Vuex.Store({
       })
     },
 
-    async registerByEmailPassword({
-      commit
-    }, param) {
 
-      console.log(param.email);
-      const auth = getAuth();
-      return new Promise((resolve, reject) => {
-        createUserWithEmailAndPassword(auth, param.email, param.password)
-          .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
 
-            console.log(user.uid);
-            resolve(user.uid)
 
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            reject(errorMessage)
 
-          });
-      })
-    },
 
-    async createUser({
+
+    async createBlogProgression({
       commit
     }, data) {
       const db = getFirestore();
 
-      return new Promise((resolve, reject) => {
-        setDoc(doc(db, "users", data.id), {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          email: data.email,
-          user_id: data.id
-        }).then(
-          response => {
 
-            // consoled for testing
-            console.log(response);
-            resolve(response)
-          }
-        ).catch(error => reject("error"));
-      })
+      localStorage.setItem("blogProgression", data);
+      let test = localStorage.getItem("blogProgression")
+      console.log(test);
 
+      // return new Promise((resolve, reject) => {
+      console.log(data);
+      setDoc(doc(db, "blogProgression", data.id), {
+        title: data.title,
+        description: data.description,
+        user_id: data.id,
+        submit: false,
+        nb_media: data.files.length
+        // file_info: [table_fale]
+      }).then(
+        response => {
+          // consoled for testing
+          console.log(response);
+          // resolve(response)
+        }
+      ).catch(error => {
+
+        console.log(error);
+
+        // reject("error")
+      });
+      // })
     },
 
-    async getUserInfo({
-      commit
-    }) {
-      const db = getFirestore();
-      const auth = getAuth();
-      const user = auth.currentUser;
-      const docRef = doc(db, "users", user.uid);
-
-      return new Promise((resolve, reject) => {
-        getDoc(docRef).then(
-          response => {
-            const u_data = response.data()
-            commit("setUser", u_data)
-            // console.log(u_data)
-            resolve(response)
-          }
-        ).catch(error => reject(error));
-
-      })
-    }
-
   },
-  modules: {}
+  modules: {
+    user,
+    blog,
+    media,
+    auth,
+  }
 })

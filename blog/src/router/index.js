@@ -61,7 +61,16 @@ const routes = [{
   {
     path: '/about',
     name: 'About',
-    component: () => import('../views/About.vue')
+    component: () => import('../views/About.vue'),
+    beforeEnter: (to, from, next) => {
+      getAuth().onAuthStateChanged((user) => {
+        if (!user) {
+          next('/login');
+        } else {
+          next();
+        }
+      })
+    }
 
   },
   {

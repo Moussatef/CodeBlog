@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default {
@@ -52,7 +53,7 @@ export default {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
-        console.log(uid);
+        // console.log(uid);
         this.isLogged = true;
         this.currentUser = user.email;
       } else {
@@ -67,6 +68,7 @@ export default {
     //
   }),
   methods: {
+    ...mapActions([""]),
     // logoutEvent() {
     //   const auth = getAuth();
     //   signOut(auth)

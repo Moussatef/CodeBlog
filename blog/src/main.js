@@ -20,6 +20,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'normalize.css'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
 const firebaseConfig = {
 
@@ -52,7 +54,7 @@ const app = initializeApp(firebaseConfig);
 const defaultStorage = getStorage();
 
 
-
+Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
