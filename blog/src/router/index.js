@@ -8,7 +8,6 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 
-
 Vue.use(VueRouter)
 
 const routes = [{
@@ -25,8 +24,6 @@ const routes = [{
         }
       })
     },
-
-
 
   },
   {
@@ -86,9 +83,6 @@ const routes = [{
         }
       })
     }
-
-
-
 
   }
 ]

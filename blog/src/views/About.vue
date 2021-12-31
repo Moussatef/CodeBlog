@@ -123,7 +123,7 @@
       </v-stepper>
     </div>
 
-    <v-btn
+    <!-- <v-btn
       :loading="loading3"
       :disabled="loading3"
       color="blue-grey"
@@ -135,12 +135,20 @@
     >
       Upload file
       <v-icon right dark> mdi-cloud-upload </v-icon>
-    </v-btn>
+    </v-btn> -->
+
+    <!-- <img
+      src="https://firebasestorage.googleapis.com/v0/b/blog-video-feadd.appspot.com/o/blogeMedia%2F1640824125582_pexels-suzy-hazelwood-3601081.jpg?alt=media&token=095d92aa-23f0-41d6-a346-7636543373ee"
+      alt=""
+      width="600"
+    /> -->
 
     <v-row justify="center">
       <v-dialog v-model="dialog_loading" persistent max-width="590">
         <v-card>
-          <v-card-title class="text-h5"> Uploading Files.. </v-card-title>
+          <v-card-title class="text-h5">
+            Uploading File NB : {{ cmp }}
+          </v-card-title>
           <v-card-text class="text-center">
             <!-- <v-overlay :value="overlay">
               <v-progress-circular
@@ -152,22 +160,22 @@
               :rotate="360"
               :size="100"
               :width="15"
-              :value="value"
+              :value="progress_upload"
               color="teal"
             >
-              {{ value }}
+              {{ parseInt(progress_upload) }} %
             </v-progress-circular>
 
             .</v-card-text
           >
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="dialog_loading = false">
+            <!-- <v-btn color="green darken-1" text @click="dialog_loading = false">
               Cancel upload
             </v-btn>
-            <v-btn color="green darken-1" text @click="dialog_loading = false">
+            <v-btn color="green darken-1" text @click="stopUpload">
               Pause upload
-            </v-btn>
+            </v-btn> -->
             <v-btn color="green darken-1" text @click="dialog_loading = false">
               Close and continue
             </v-btn>
@@ -197,13 +205,6 @@
 </template>
 
 <script>
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -228,84 +229,102 @@ export default {
       title: null,
       description: null,
       files: [],
+      cmp: 1,
+      url_media: [],
     };
   },
   methods: {
-    ...mapActions(["getUserInfo", "createBlogProgression"]),
-    handleRemove(file) {
-      // console.log(file.raw);
-      this.file.push(file.raw);
-      console.log(this.file);
+    ...mapActions(["getUserInfo", "createBlogProgression", "stopUpload"]),
+
+    open1() {
+      const h = this.$createElement;
+
+      this.$notify({
+        title: "Successfull upmoad",
+        message: h(
+          "i",
+          { style: "color: teal" },
+          "This is a reminder File nb " + this.cmp + " is uploaded"
+        ),
+      });
     },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
-    handleDownload(file) {
-      console.log(file);
+
+    justUploading(file) {
+      this.$store
+        .dispatch("UploadFile", file)
+        .then((snapshot) => {
+          console.log(snapshot);
+          this.url_media.push({
+            URL: snapshot,
+          });
+
+          this.open1();
+          this.cmp++;
+
+          this.testUploadFile();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     testUploadFile() {
-      const storage = getStorage();
       if (this.files.length) {
-        this.dialog_loading = true;
-        this.overlay = true;
-        // 'file' comes from the Blob or File API
-        this.files.forEach((file) => {
-          const storageRef = ref(
-            storage,
-            "blogeMedia/" + Date.now() + "_" + file.name
-          );
-          uploadBytes(storageRef, file).then((snapshot) => {
-            console.log("Uploaded a blob or file! " + snapshot);
-            this.overlay = false;
-            this.dialog_loading = false;
-            this.dialog = true;
-          });
-        });
-        this.files = [];
+        if (this.cmp <= this.files.length) {
+          let index_f = this.cmp;
+          this.dialog_loading = true;
+          this.overlay = true;
+          this.justUploading(this.files[index_f - 1]);
+        } else {
+          this.overlay = false;
+          this.dialog_loading = false;
+          this.dialog = true;
+          this.files = [];
+          this.cmp = 1;
+        }
       } else console.log("no file selected");
     },
 
-    stopUpload() {
-      // Upload the file and metadata
-      const uploadTask = uploadBytesResumable(storageRef, file);
-    },
+    // stopUpload() {
+    //   // Upload the file and metadata
+
+    // },
 
     createBlogProgressionTest(title, description, files, uid) {
+      this.testUploadFile();
       const data = {
         title: title,
         description: description,
         files: files,
         id: uid,
+        media: this.url_media,
       };
-      this.testUploadFile();
-      this.createBlogProgression(data);
+      // this.createBlogProgression(data);
 
-      // this.$store
-      //   .dispatch("createBlogProgression", data)
-      //   .then((res) => {
-      //     console.log(res);
-      //   })
-      //   .catch((error) => {
-      //     console.log("error");
-      //   });
+      this.$store
+        .dispatch("createBlogProgression", data)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   beforeDestroy() {
-    clearInterval(this.interval);
+    // clearInterval(this.interval);
   },
   mounted() {
     this.getUserInfo();
 
-    this.interval = setInterval(() => {
-      if (this.value === 100) {
-        return (this.value = 0);
-      }
-      this.value += 5;
-    }, 1000);
+    // this.interval = setInterval(() => {
+    //   if (this.value === 100) {
+    //     return (this.value = 0);
+    //   }
+    //   this.value += 5;
+    // }, 1000);
   },
   computed: {
-    ...mapGetters(["auth_User"]),
+    ...mapGetters(["auth_User", "progress_upload"]),
   },
   watch: {},
 };

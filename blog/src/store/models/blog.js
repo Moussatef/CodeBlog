@@ -2,6 +2,7 @@ import {
     doc,
     setDoc,
     Timestamp,
+    serverTimestamp,
     getFirestore,
     collection,
     addDoc,
@@ -24,33 +25,32 @@ const actions = {
     }, data) {
         const db = getFirestore();
 
+        let data_url = new FormData();
+        let cmp = 1
+        console.log(data.media);
 
-        localStorage.setItem("blogProgression", data);
-        let test = localStorage.getItem("blogProgression")
-        console.log(test);
+        return new Promise((resolve, reject) => {
+            setDoc(doc(db, "blogProgression", data.id), {
+                title: data.title,
+                description: data.description,
+                user_id: data.id,
+                submit: false,
+                nb_media: data.files.length,
+                Timestamp: serverTimestamp(),
+                // media_url: data_url
+            }).then(
+                response => {
+                    // consoled for testing
+                    console.log(response);
+                    resolve(response)
+                }
+            ).catch(error => {
 
-        // return new Promise((resolve, reject) => {
-        console.log(data);
-        setDoc(doc(db, "blogProgression", data.id), {
-            title: data.title,
-            description: data.description,
-            user_id: data.id,
-            submit: false,
-            nb_media: data.files.length
-            // file_info: [table_fale]
-        }).then(
-            response => {
-                // consoled for testing
-                console.log(response);
-                // resolve(response)
-            }
-        ).catch(error => {
+                console.log(error);
 
-            console.log(error);
-
-            // reject("error")
-        });
-        // })
+                reject("error")
+            });
+        })
     },
 
 }

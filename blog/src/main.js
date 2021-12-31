@@ -7,8 +7,6 @@ import {
   initializeApp
 } from "firebase/app";
 
-
-
 import 'jquery'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -34,38 +32,9 @@ const firebaseConfig = {
 
   appId: "1:630822024405:web:94fd156abc79b59a0fde5c"
 
-
 };
 
 const app = initializeApp(firebaseConfig);
-import {
-  doc,
-  setDoc,
-  Timestamp,
-  getFirestore,
-  collection,
-  addDoc,
-  getDoc,
-} from "firebase/firestore";
-import {
-  getAuth,
-  createUserWithEmailAndPassword
-} from "firebase/auth";
-
-import {
-  getStorage
-} from "firebase/storage";
-// Initialize Firebase
-
-
-
-
-
-
-// Use the shorthand notation to access the default project's Firebase services
-const defaultStorage = getStorage();
-const db = getFirestore()
-
 
 Vue.use(ElementUI);
 
