@@ -1,6 +1,8 @@
 import {
     getAuth,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword
 } from "firebase/auth";
 
 const state = {
@@ -12,7 +14,7 @@ const getters = {
 }
 
 const actions = {
-    async registerByEmailPassword({
+    registerByEmailPassword({
         commit
     }, param) {
 
@@ -26,6 +28,53 @@ const actions = {
 
                     console.log(user.uid);
                     resolve(user.uid)
+
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    reject(errorMessage)
+
+                });
+        })
+    },
+
+    authenticateByEmailAndPassword({
+        commit
+    }, param) {
+
+        console.log(param.email);
+        const auth = getAuth();
+        return new Promise((resolve, reject) => {
+            signInWithEmailAndPassword(auth, param.email, param.password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+
+                    console.log(user.uid);
+                    resolve(user.uid)
+
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    reject(errorMessage)
+
+                });
+        })
+    },
+    resetPassword({
+        commit
+    }, param) {
+
+        console.log(param.email);
+        const auth = getAuth();
+        return new Promise((resolve, reject) => {
+            sendPasswordResetEmail(auth, param.email)
+                .then(() => {
+                    // sendPasswordResetEmail
+                    console.log("email sent");
+                    resolve("ok")
 
                 })
                 .catch((error) => {

@@ -65,7 +65,11 @@ export default {
   data: () => ({
     isLogged: false,
     currentUser: false,
-    //
+    user: {
+      initials: "JD",
+      fullName: "John Doe",
+      email: "john.doe@doe.com",
+    },
   }),
   methods: {
     ...mapActions([""]),
@@ -84,7 +88,7 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="scss" >
 #mynavi a {
   color: #444444;
   text-decoration: none;
@@ -95,5 +99,13 @@ export default {
     border-bottom: 2px solid #238a91;
     // transition: 200ms;
   }
+}
+
+.vs-dialog {
+  min-width: 700px !important;
+  max-width: 500px !important;
+}
+.vs-input {
+  width: 100% !important;
 }
 </style>

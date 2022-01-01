@@ -16,6 +16,24 @@ import 'aos/dist/aos.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
+
+import Vuesax from 'vuesax'
+import 'vuesax/dist/vuesax.css'
+
+Vue.use(Vuesax, {
+  // options here
+  colors: {
+    primary: '#5b3cc4',
+    success: 'rgb(23, 201, 100)',
+    danger: 'rgb(242, 19, 93)',
+    warning: 'rgb(255, 130, 0)',
+    dark: 'rgb(36, 33, 69)'
+  }
+
+})
+
+
+
 const firebaseConfig = {
 
   apiKey: "AIzaSyDd8JVpuZWgtEv4r97N3qe_TrbcHOfbjhs",
@@ -35,6 +53,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+import {
+  getAuth,
+  onAuthStateChanged
+} from "firebase/auth";
 
 Vue.use(ElementUI);
 

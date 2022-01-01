@@ -20,14 +20,11 @@ const getters = {
 }
 
 const actions = {
-    async createBlogProgression({
+    createBlogProgression({
         commit
     }, data) {
         const db = getFirestore();
-
-        let data_url = new FormData();
-        let cmp = 1
-        console.log(data.media);
+        console.log(data);
 
         return new Promise((resolve, reject) => {
             setDoc(doc(db, "blogProgression", data.id), {
@@ -37,7 +34,7 @@ const actions = {
                 submit: false,
                 nb_media: data.files.length,
                 Timestamp: serverTimestamp(),
-                // media_url: data_url
+                media_url: data.media
             }).then(
                 response => {
                     // consoled for testing
@@ -53,9 +50,32 @@ const actions = {
         })
     },
 
+    getBlogProgression({
+        commit
+    }, id) {
+        const db = getFirestore();
+        const docRef = doc(db, "blogProgression", id);
+
+        return new Promise((resolve, reject) => {
+            getDoc(docRef).then(
+                result => {
+                    console.log(result.data());
+                    commit("addProgresBlog", result.data())
+                    resolve(result)
+
+                }
+            ).catch(error => {
+                console.log(error);
+                reject(error)
+            })
+
+        })
+    }
+
 }
 
 const mutations = {
+    addProgresBlog: (state, data) => (state.blog_progression = data)
 
 }
 

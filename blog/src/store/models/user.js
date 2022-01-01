@@ -19,7 +19,7 @@ const getters = {
 }
 
 const actions = {
-    async createUser({
+    createUser({
         commit
     }, data) {
         const db = getFirestore();
@@ -41,7 +41,7 @@ const actions = {
         })
 
     },
-    async getUserInfo({
+    getUserInfo({
         commit
     }) {
         const db = getFirestore();
