@@ -91,20 +91,7 @@
               </v-row>
             </v-card>
 
-            <v-btn
-              color="primary"
-              @click="
-                createBlogProgressionTest(
-                  title,
-                  description,
-                  files,
-                  auth_User.user_id
-                )
-              "
-            >
-              Continue
-            </v-btn>
-
+            <v-btn color="primary" @click="testUploadFile()"> Continue </v-btn>
             <v-btn text> Cancel </v-btn>
           </v-stepper-content>
 
@@ -194,8 +181,8 @@
           <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn color="green darken-1" text @click="dialog = false">
-              Close
+            <v-btn color="green darken-1" text @click="goSubmetBlog()">
+              Go To Step 2
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -233,6 +220,7 @@ export default {
       url_media: [],
     };
   },
+
   methods: {
     ...mapActions(["getUserInfo", "createBlogProgression", "stopUpload"]),
 
@@ -253,9 +241,10 @@ export default {
       this.$store
         .dispatch("UploadFile", file)
         .then((snapshot) => {
-          console.log(snapshot);
+          console.log(snapshot.path);
           this.url_media.push({
-            URL: snapshot,
+            URL: snapshot.url,
+            Path: snapshot.path,
           });
 
           this.open1();
@@ -275,6 +264,11 @@ export default {
           this.overlay = true;
           this.justUploading(this.files[index_f - 1]);
         } else {
+          this.createBlogProgressionTest(
+            this.title,
+            this.description,
+            this.$store.getters.auth_User.user_id
+          );
           this.overlay = false;
           this.dialog_loading = false;
           this.dialog = true;
@@ -289,13 +283,12 @@ export default {
 
     // },
 
-    createBlogProgressionTest(title, description, files, uid) {
-      this.testUploadFile();
+    createBlogProgressionTest(title, description, uid) {
       const data = {
         title: title,
         description: description,
-        files: files,
         id: uid,
+        files: this.files,
         media: this.url_media,
       };
       // this.createBlogProgression(data);
@@ -304,6 +297,17 @@ export default {
         .dispatch("createBlogProgression", data)
         .then((res) => {
           console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    goSubmetBlog() {
+      this.$store
+        .dispatch("getBlogProgression", this.$store.getters.auth_User.user_id)
+        .then((result) => {
+          console.log(result);
         })
         .catch((error) => {
           console.log(error);
@@ -324,7 +328,7 @@ export default {
     // }, 1000);
   },
   computed: {
-    ...mapGetters(["auth_User", "progress_upload"]),
+    ...mapGetters(["auth_User", "progress_upload", "blog_progression"]),
   },
   watch: {},
 };

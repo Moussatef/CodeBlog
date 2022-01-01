@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-container class="grey lighten-5">
+  <div class="">
+    <v-container class="">
       <v-row class="text-center justify-center p-5">
         <v-col md="5">
           <v-form ref="form" v-model="valid" lazy-validation>
@@ -50,12 +50,30 @@
             <v-btn
               :disabled="!valid"
               color="success"
-              class="mr-4 w-100"
-              v-if="valid"
+              class="mr-4 my-4 w-100"
               @click="register"
             >
               Register
             </v-btn>
+            <v-btn
+              color="primary"
+              class="mr-4 w-100 my-2"
+              @click="$router.replace({ name: 'Login' })"
+            >
+              Login
+            </v-btn>
+            <!-- <vs-button
+              class="w-100 mt-4 py-1"
+              color="rgb(45, 97, 240)"
+              gradient
+              :active_btn_log="active_btn_log == 6"
+              @click="
+                active_btn_log = 6;
+                $router.replace({ name: 'Login' });
+              "
+            >
+              Login
+            </vs-button> -->
           </v-form>
         </v-col>
       </v-row>
@@ -65,10 +83,11 @@
 
 <script>
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data: () => ({
+    active_btn_log: 0,
     valid: false,
     show1: false,
     valid_pass: false,
@@ -130,7 +149,7 @@ export default {
       this.$store
         .dispatch("createUser", data)
         .then((res) => {
-          console.log(res);
+          console.log("ok good data is ready");
         })
         .catch((error) => {
           console.log(error);
