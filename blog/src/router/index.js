@@ -3,6 +3,10 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
+import CreateBlog from '../views/CreateBlog.vue'
+import Dashboard from '../views/Dashboard.vue'
+import Blogs from '../views/Blogs.vue'
+import BlogPreview from '../views/BlogPreview.vue'
 import {
   getAuth,
   onAuthStateChanged
@@ -10,10 +14,21 @@ import {
 
 Vue.use(VueRouter)
 
-const routes = [{
+const routes = [
+
+  {
     path: '/',
     name: 'Home',
     component: Home,
+    meta: {
+      title: "Home",
+    }
+
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
 
     beforeEnter: (to, from, next) => {
       getAuth().onAuthStateChanged((user) => {
@@ -24,8 +39,69 @@ const routes = [{
         }
       })
     },
+    meta: {
+      title: "Dashboard",
+    }
 
   },
+  {
+    path: '/blog-preview',
+    name: 'BlogPreview',
+    component: BlogPreview,
+
+    beforeEnter: (to, from, next) => {
+      getAuth().onAuthStateChanged((user) => {
+        if (!user) {
+          next('/login');
+        } else {
+          next();
+        }
+      })
+    },
+    meta: {
+      title: "BlogPreview",
+    }
+
+  },
+  {
+    path: '/blogs',
+    name: 'Blogs',
+    component: Blogs,
+
+    beforeEnter: (to, from, next) => {
+      getAuth().onAuthStateChanged((user) => {
+        if (!user) {
+          next('/login');
+        } else {
+          next();
+        }
+      })
+    },
+    meta: {
+      title: "Blogs",
+    }
+
+  },
+  {
+    path: '/create-blog',
+    name: 'CreateBlog',
+    component: CreateBlog,
+
+    beforeEnter: (to, from, next) => {
+      getAuth().onAuthStateChanged((user) => {
+        if (!user) {
+          next('/login');
+        } else {
+          next();
+        }
+      })
+    },
+    meta: {
+      title: "Create Blog",
+    }
+
+  },
+
   {
     path: '/register',
     name: 'Register',
@@ -38,6 +114,9 @@ const routes = [{
           next();
         }
       })
+    },
+    meta: {
+      title: "Register",
     }
   },
   {
@@ -52,6 +131,9 @@ const routes = [{
           next();
         }
       })
+    },
+    meta: {
+      title: "Login",
     }
 
   },
@@ -87,13 +169,14 @@ const routes = [{
   }
 ]
 
-
-
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
+// router.beforeEach((to, from, next) => {
+//   document.title = `${to.meta.title} | CodeBlogs`
+// })
 
 
 

@@ -25,7 +25,26 @@ import auth from './models/auth';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
+  state: {
+    sampleBlogCards: [{
+        blogTitle: "Blog Card #1",
+        blogCover: "stock-1",
+        blogDate: "Oct 10, 2010",
+      },
+      {
+        blogTitle: "Blog Card #2",
+        blogCover: "stock-2",
+        blogDate: "Oct 10, 2020",
+      },
+      {
+        blogTitle: "Blog Card #3",
+        blogCover: "stock-3",
+        blogDate: "Oct 10, 2016",
+      },
+    ],
+
+
+  },
 
   getters: {},
 

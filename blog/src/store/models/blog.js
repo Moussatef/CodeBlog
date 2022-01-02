@@ -11,11 +11,13 @@ import {
 
 const state = {
     blog_progression: [],
+    blog_submited: [],
 
 }
 
 const getters = {
     blog_progression: state => state.blog_progression,
+    blog_submited: state => state.blog_submited,
 
 }
 
@@ -49,6 +51,36 @@ const actions = {
             });
         })
     },
+    submitBlog({
+        commit
+    }, data) {
+        const db = getFirestore();
+        console.log(data);
+
+        return new Promise((resolve, reject) => {
+            setDoc(doc(db, "blogSubmited"), {
+                title: data.title,
+                description: data.description,
+                user_id: data.id,
+                submit: false,
+                nb_media: data.files.length,
+                Timestamp: serverTimestamp(),
+                submited_at: Date.now(),
+                media_url: data.media
+            }).then(
+                response => {
+                    // consoled for testing
+                    console.log(response);
+                    resolve(response)
+                }
+            ).catch(error => {
+
+                console.log(error);
+
+                reject("error")
+            });
+        })
+    },
 
     getBlogProgression({
         commit
@@ -60,8 +92,9 @@ const actions = {
             getDoc(docRef).then(
                 result => {
                     console.log(result.data());
-                    commit("addProgresBlog", result.data())
-                    resolve(result)
+                    const data = result.data()
+                    commit("addProgresBlog", data)
+                    resolve(data)
 
                 }
             ).catch(error => {

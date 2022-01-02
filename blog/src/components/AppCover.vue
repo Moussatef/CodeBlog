@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <template>
+  <div class="container">
+    <!-- <template>
       <v-card class="mx-auto" max-width="804" tile>
         <v-img height="300" src="@/assets/pic/blog.jpg">
           <v-row align="end" class="">
@@ -24,7 +24,44 @@
           </v-row>
         </v-img>
       </v-card>
-    </template>
+    </template> -->
+
+    <div class="card_info">
+      <div class="item_img">
+        <img
+          id="avatar"
+          src="@/assets/pic/pr2.png"
+          alt=""
+          width="200px"
+          height="200px"
+        />
+        <h6 id="fullname">
+          {{ auth_User.first_name }} {{ auth_User.last_name }}
+        </h6>
+        <hr />
+        <p id="bio"></p>
+        <div class="media">
+          <p id="place"></p>
+          <p id="twitter"></p>
+          <p id="blog"></p>
+        </div>
+      </div>
+      <div class="item_info">
+        <div class="username">
+          <h2 id="username">
+            {{ auth_User.first_name }} {{ auth_User.last_name }}
+          </h2>
+        </div>
+
+        <div class="item_follow">
+          <span id="followers" class="item_f">followers : 30 K</span>
+
+          <span id="following" class="item_f">following : 25 K</span>
+
+          <span id="NB_repos" class="item_f">Blogs :</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,3 +101,53 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.card_info {
+  width: 110%;
+  display: flex;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .item_img {
+    width: 30%;
+    text-align: center;
+    align-items: center;
+    #avatar {
+      border-radius: 50%;
+    }
+    h6 {
+      font-size: 24px;
+      box-sizing: border-box;
+      margin-bottom: 3px;
+    }
+    hr {
+      border-bottom: 1px solid rgb(97, 97, 97);
+      margin: 3px;
+    }
+  }
+  .item_info {
+    width: 70%;
+
+    .username {
+      margin: 50px 50px 30px 50px;
+    }
+    .item_follow {
+      margin: 10px 50px 50px 100px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+      .item_f {
+        margin-left: 10px;
+        margin-right: 30px;
+        font-size: 25px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+    }
+  }
+}
+</style>
