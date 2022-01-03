@@ -39,9 +39,10 @@
           {{ auth_User.first_name }} {{ auth_User.last_name }}
         </h6>
         <hr />
+
         <p id="bio"></p>
         <div class="media">
-          <p id="place"></p>
+          <p id="place">Email : {{ auth_User.email }}</p>
           <p id="twitter"></p>
           <p id="blog"></p>
         </div>

@@ -9,7 +9,7 @@
       <!-- </div> -->
     </div>
 
-    <v-carousel height="300" :show-arrows="false">
+    <v-carousel height="320" :show-arrows="false">
       <v-carousel-item
         class="text-center"
         v-for="(video, index) in post.media_url"
@@ -19,7 +19,7 @@
           :kind="'video'"
           :controls="true"
           :src="[video.URL]"
-          :style="{ height: '300px' }"
+          :style="{ width: '100%', height: '300px' }"
         >
         </Media
       ></v-carousel-item>
@@ -27,7 +27,10 @@
     <div class="info">
       <h4>{{ post.title }}</h4>
       <h6>Postef on : {{ post.created_at }}</h6>
-      <router-link class="link" to="#">
+      <router-link
+        class="link"
+        :to="{ name: 'BlogPreview', params: { id: this.post.blogID } }"
+      >
         View The Post
         <!-- <ArrowRight class="arrow" /> -->
       </router-link>

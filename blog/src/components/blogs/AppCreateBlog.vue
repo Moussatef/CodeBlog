@@ -389,7 +389,7 @@ export default {
       } else console.log("file is empty");
     },
     testUploadFile() {
-      if (this.files.length) {
+      if (this.files.length && this.title.length && this.description) {
         if (this.cmp <= this.files.length) {
           let index_f = this.cmp;
           this.dialog_loading = true;

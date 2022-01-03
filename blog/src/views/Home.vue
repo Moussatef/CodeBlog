@@ -1,13 +1,17 @@
 <template>
   <div class="home">
-    <AppBlog :post="welcomScreen" />
-    <AppBlog v-for="(post, index) in blog_submited" :key="index" :post="post" />
+    <AppBlog :post="welcomScreen" :isLogged="isLogged" />
+    <AppBlog
+      v-for="(post, index) in blog_submited.slice(0, 3)"
+      :key="index"
+      :post="post"
+    />
     <div class="blog-card-wrap">
       <div class="container">
         <h3>View More Recent Blogs</h3>
         <div class="blog-cards">
           <AppBlogCard
-            v-for="(post, index) in blog_submited"
+            v-for="(post, index) in blog_submited.slice(3, 7)"
             :key="index"
             :post="post"
           />
@@ -18,9 +22,9 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import AppBlog from "@/components/blogs/AppBlog";
 import AppBlogCard from "@/components/blogs/AppBlogCard";
-import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Home",
 
@@ -30,6 +34,7 @@ export default {
   },
   data() {
     return {
+      isLogged: false,
       welcomScreen: {
         title: "Welcom",
         blogPost:
@@ -56,13 +61,21 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getBlogSubmited"]),
+    ...mapActions(["getBlogSubmited", "getUserInfo"]),
   },
   computed: {
-    ...mapGetters(["blog_submited"]),
+    ...mapGetters(["blog_submited", "auth_User"]),
   },
   created() {
+    this.getUserInfo();
     this.getBlogSubmited();
+  },
+  watch: {
+    auth_User: function (value) {
+      if (value) {
+        this.isLogged = true;
+      }
+    },
   },
 };
 </script>

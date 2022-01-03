@@ -16,12 +16,14 @@ import {
 const state = {
     blog_progression: [],
     blog_submited: [],
+    blog_filter: null,
 
 }
 
 const getters = {
     blog_progression: state => state.blog_progression,
     blog_submited: state => state.blog_submited,
+    blog_filter: state => state.blog_filter,
 
 }
 
@@ -70,27 +72,21 @@ const actions = {
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var dateTime = date + ' ' + time;
 
-        const blog = {
-            title: data.title,
-            description: data.description,
-            user_id: data.id,
-            nb_media: data.files,
-            submet: true,
-            Timestamp: serverTimestamp(),
-            created_at: dateTime,
-            media_url: data.media
-        }
 
         return new Promise((resolve, reject) => {
-            addDoc(collection(db, "blogSubmited"), {
+            const newBlog = doc(collection(db, "blogSubmited"));
+            const blog = {
+                blogID: newBlog.id,
                 title: data.title,
                 description: data.description,
                 user_id: data.id,
                 nb_media: data.files,
+                submet: true,
                 Timestamp: serverTimestamp(),
                 created_at: dateTime,
                 media_url: data.media
-            }).then(
+            }
+            setDoc(newBlog, blog).then(
                 response => {
 
                     const progressionRef = doc(db, "blogProgression", data.id);
@@ -169,6 +165,17 @@ const actions = {
         //     })
 
         // })
+    },
+
+    async filterBlog({
+        commit
+    }, id) {
+
+        const blogf = await state.blog_submited.filter((result) => {
+            return result.blogID === id;
+        });
+        commit("filterBlog", blogf)
+        console.log(blogf);
     }
 
 }
@@ -178,7 +185,8 @@ const mutations = {
     addProgresBlog: (state, data) => (state.blog_progression = data),
     addBlogSubmited: (state, data) => (state.blog_submited.push(data)),
     updateSubmitFilde: (state) => state.blog_progression.submit = true,
-
+    filterBlog: (state, data) => (state.blog_filter = data[0]),
+    userBlogs: (state, data) => (state.blog_filter = data),
     // state.postsProblem.splice(state.postsProblem.findIndex(el => el.id == putPost.id), 1, putPost);
 }
 

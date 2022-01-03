@@ -8,8 +8,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Blogs from '../views/Blogs.vue'
 import BlogPreview from '../views/BlogPreview.vue'
 import {
-  getAuth,
-  onAuthStateChanged
+  getAuth
 } from "firebase/auth";
 
 Vue.use(VueRouter)
@@ -45,21 +44,11 @@ const routes = [
 
   },
   {
-    path: '/blog-preview',
+    path: '/blog-view/:id',
     name: 'BlogPreview',
     component: BlogPreview,
-
-    beforeEnter: (to, from, next) => {
-      getAuth().onAuthStateChanged((user) => {
-        if (!user) {
-          next('/login');
-        } else {
-          next();
-        }
-      })
-    },
     meta: {
-      title: "BlogPreview",
+      title: "Blog-View",
     }
 
   },

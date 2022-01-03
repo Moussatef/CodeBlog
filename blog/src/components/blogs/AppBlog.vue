@@ -7,10 +7,21 @@
         <p v-if="post.welcomScreen">{{ post.blogPost }}</p>
         <!-- <p v-else class="contant-preview" v-html="post.description"></p> -->
 
-        <router-link v-if="post.welcomScreen" class="link link-light" to="#">
+        <router-link
+          v-if="post.welcomScreen"
+          v-show="!isLogged"
+          class="link link-light"
+          :to="{ name: 'Login' }"
+        >
           Login/Register</router-link
         >
-        <router-link class="link" v-else to="#"> View The Post</router-link>
+        <router-link
+          class="link"
+          v-else
+          :to="{ name: 'BlogPreview', params: { id: this.post.blogID } }"
+        >
+          View The Post</router-link
+        >
       </div>
     </div>
     <div class="blogImg">
@@ -47,7 +58,7 @@
 import Media from "@dongido/vue-viaudio";
 export default {
   name: "AppBlog",
-  props: ["post"],
+  props: ["post", "isLogged"],
   components: { Media },
 };
 </script>
@@ -155,7 +166,7 @@ export default {
 }
 .no-user:first-child {
   .blog-content {
-    background-color: #303030;
+    background: linear-gradient(90deg, #444444 0%, #92feec88 100%);
     color: #fff;
   }
 }
