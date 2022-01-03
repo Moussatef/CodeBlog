@@ -65,9 +65,13 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
+getAuth().onAuthStateChanged(() => {
+
+  new Vue({
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
+  }).$mount('#app')
+
+})

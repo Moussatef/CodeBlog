@@ -1,39 +1,47 @@
 <template>
   <div class="blog-card">
     <div class="icons">
-      <div class="icon">
-        <Edit class="edit" />
-      </div>
-      <div class="icon">
-        <Delete class="delete" />
-      </div>
+      <!-- <div class="icon"> -->
+      <!-- <Edit class="edit" /> -->
+      <!-- </div> -->
+      <!-- <div class="icon"> -->
+      <!-- <Delete class="delete" /> -->
+      <!-- </div> -->
     </div>
-    <img
-      :src="require(`../../assets/blogCards/${post.blogCover}.jpg`)"
-      alt=""
-    />
+
+    <v-carousel height="300" :show-arrows="false">
+      <v-carousel-item
+        class="text-center"
+        v-for="(video, index) in post.media_url"
+        :key="index"
+      >
+        <Media
+          :kind="'video'"
+          :controls="true"
+          :src="[video.URL]"
+          :style="{ height: '300px' }"
+        >
+        </Media
+      ></v-carousel-item>
+    </v-carousel>
     <div class="info">
-      <h4>{{ post.blogTitle }}</h4>
-      <h6>Postef on : {{ post.blogDate }}</h6>
+      <h4>{{ post.title }}</h4>
+      <h6>Postef on : {{ post.created_at }}</h6>
       <router-link class="link" to="#">
         View The Post
-        <ArrowRight class="arrow" />
+        <!-- <ArrowRight class="arrow" /> -->
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
-import ArrowRight from "../../assets/Icons/arrow-right-light.svg";
-import Edit from "../../assets/Icons/edit-regular.svg";
-import Delete from "../../assets/Icons/trash-regular.svg";
+import Media from "@dongido/vue-viaudio";
 export default {
   name: "AppBlogCard",
   props: ["post"],
   components: {
-    ArrowRight,
-    Edit,
-    Delete,
+    Media,
   },
 };
 </script>
@@ -100,7 +108,7 @@ export default {
   .info {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 200px;
     z-index: 3;
     padding: 32px 16px;
     color: #000;

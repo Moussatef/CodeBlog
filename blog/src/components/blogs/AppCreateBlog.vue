@@ -25,11 +25,7 @@
                 <v-row align="center" justify="center">
                   <v-col cols="12">
                     <v-hover v-slot="{ hover }" disabled>
-                      <v-card
-                        :elevation="hover ? 12 : 2"
-                        class="mx-auto"
-                        max-width="650"
-                      >
+                      <v-card :elevation="hover ? 12 : 2" class="mx-auto">
                         <v-card-text class="my-4 text-center text-h6">
                           NEW BLOG
                           <v-row>
@@ -53,6 +49,7 @@
                             <v-col cols="12" md="12" class="mb-4">
                               <v-file-input
                                 v-model="files"
+                                accept=".mp4"
                                 class="w-100"
                                 color="deep-purple accent-4"
                                 counter
@@ -65,7 +62,7 @@
                               >
                                 <template v-slot:selection="{ index, text }">
                                   <v-chip
-                                    v-if="index < 2"
+                                    v-if="index < 3"
                                     color="deep-purple accent-4"
                                     dark
                                     label
@@ -75,7 +72,7 @@
                                   </v-chip>
 
                                   <span
-                                    v-else-if="index === 2"
+                                    v-else-if="index === 3"
                                     class="
                                       text-overline
                                       grey--text
@@ -157,7 +154,20 @@
                 </v-row>
               </v-card>
 
-              <v-btn color="primary"> submit </v-btn>
+              <v-btn
+                @click="
+                  blogSubmiting(
+                    blog_progression.title,
+                    blog_progression.description,
+                    blog_progression.user_id,
+                    blog_progression.media_url,
+                    blog_progression.nb_media
+                  )
+                "
+                color="primary"
+              >
+                submit
+              </v-btn>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -221,6 +231,22 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <!-- dialog confirm submit -->
+      <vs-dialog width="550px" not-center v-model="active_submission">
+        <template #header>
+          <h4 class="not-margin">Welcome to <b>Vuesax</b></h4>
+        </template>
+
+        <div class="con-content">
+          <p>Submited successfully</p>
+        </div>
+
+        <template #footer>
+          <div class="con-footer">
+            <vs-button @click="redirectBlog" transparent> Ok </vs-button>
+          </div>
+        </template>
+      </vs-dialog>
     </div>
   </div>
 </template>
@@ -236,8 +262,8 @@ import Media from "@dongido/vue-viaudio";
 import { mapActions, mapGetters } from "vuex";
 import Quill from "quill";
 window.Quill = Quill;
-
 const ImageResize = require("quill-image-resize-module").default;
+Quill.register("modules/imageResize", ImageResize);
 export default {
   name: "AppCreateBlog",
   components: {
@@ -245,6 +271,7 @@ export default {
   },
   data() {
     return {
+      active_submission: false,
       uploading_data: false,
       dialogImageUrl: "",
       dialogVisible: false,
@@ -270,7 +297,7 @@ export default {
       blogTitle: undefined,
       blogHTML: undefined,
       editorSettings: {
-        module: {
+        modules: {
           imageResize: {},
         },
       },
@@ -352,10 +379,8 @@ export default {
               URL: snapshot.url,
               Path: snapshot.path,
             });
-
             this.open1();
             this.cmp++;
-
             this.testUploadFile();
           })
           .catch((error) => {
@@ -439,17 +464,63 @@ export default {
           this.uploading_data = false;
         });
     },
+    blogSubmiting(title, description, uid, url_media, nb_file) {
+      if (
+        title.length > 0 &&
+        description.length > 0 &&
+        uid.length > 0 &&
+        nb_file > 0 &&
+        url_media.length > 0
+      ) {
+        this.uploading_data = true;
+        const data = {
+          title: title,
+          description: description,
+          id: uid,
+          files: nb_file,
+          media: url_media,
+        };
+        // this.createBlogProgression(data);
+
+        this.$store
+          .dispatch("submitBlog", data)
+          .then((res) => {
+            console.log(res);
+            this.uploading_data = false;
+            this.active_submission = true;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.uploading_data = false;
+          });
+      } else {
+        console.log("Some data maybe empty");
+      }
+    },
+    redirectBlog() {
+      this.active_submission = false;
+      this.$router.replace({ name: "Blogs" });
+    },
   },
   beforeDestroy() {},
-  mounted() {},
-  beforeMount() {
-    this.getUserInfo();
+  mounted() {
     this.goSubmetBlog();
   },
+  beforeMount() {},
   computed: {
     ...mapGetters(["auth_User", "progress_upload", "blog_progression"]),
   },
-  watch: {},
+  watch: {
+    auth_User: function (value) {
+      if (value) {
+        this.uploading_data = false;
+        this.goSubmetBlog();
+        // console.log(value);
+      } else {
+        this.uploading_data = true;
+      }
+    },
+  },
 };
 </script>
 

@@ -26,7 +26,7 @@ const actions = {
     }, file) {
 
         const storage = getStorage();
-        const storageRef = ref(storage, "blogeMedia/" + Date.now() + "_" + file.name);
+        const storageRef = ref(storage, "blogeMediaVd/" + Date.now() + "_" + file.name);
 
         state.storageRefUp = {
             storageRef: storageRef,

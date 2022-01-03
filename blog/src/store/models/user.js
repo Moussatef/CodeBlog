@@ -10,6 +10,7 @@ import {
 
 const state = {
     auth_User: null,
+    user_id: undefined,
 
 
 }

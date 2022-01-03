@@ -1,10 +1,6 @@
 <template>
   <header>
-    <nav class="container">
-      <div class="branding">
-        <router-link class="header" :to="{ name: 'Home' }"></router-link>
-      </div>
-      <div class="nav-links">
+    <!-- <div class="nav-links">
         <ul v-show="!mobile">
           <div v-if="!isLogged">
             <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
@@ -40,26 +36,59 @@
             <div class="options">
               <div class="option">
                 <router-link class="option" :to="{ name: 'Dashboard' }">
-                  <userIcon class="icon" />
                   <p>Dashboard</p>
                 </router-link>
               </div>
               <div @click="logout()" class="option">
                 <span class="option">
-                  <signOutIcon class="icon" />
                   <p>Sign Out</p>
                 </span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </nav>
-    <menuIcon
-      @click="mobileNav = !mobileNav"
-      v-show="mobile"
-      class="menu-icon"
-    />
+      </div> -->
+    <el-menu
+      v-if="!mobile"
+      :default-active="activeIndex2"
+      class="el-menu-demo position-fixed w-100 d-flex"
+      mode="horizontal"
+      @select="handleSelect"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#ffd04b"
+    >
+      <router-link class="link" :to="{ name: 'Home' }"
+        ><el-menu-item index="1">Home</el-menu-item></router-link
+      >
+      <router-link class="link" :to="{ name: 'CreateBlog' }"
+        ><el-menu-item index="2" v-if="isLogged"
+          >Crate Blog</el-menu-item
+        ></router-link
+      >
+      <router-link class="link" :to="{ name: 'Blogs' }"
+        ><el-menu-item index="3">Blogs</el-menu-item></router-link
+      >
+
+      <router-link class="link" v-if="!isLogged" :to="{ name: 'Register' }"
+        ><el-menu-item index="5">Register</el-menu-item></router-link
+      >
+      <router-link class="link" v-if="!isLogged" :to="{ name: 'Login' }"
+        ><el-menu-item index="6">Login</el-menu-item></router-link
+      >
+
+      <el-submenu index="6">
+        <template slot="title">Dashboard</template>
+        <router-link class="link" v-if="isLogged" :to="{ name: 'Dashboard' }">
+          <el-menu-item index="2-1">Profile</el-menu-item>
+        </router-link>
+        <el-menu-item index="2-2" @click="logout()">Log Out</el-menu-item>
+      </el-submenu>
+    </el-menu>
+
+    <span @click="mobileNav = !mobileNav" v-show="mobile" class="menu-icon"
+      >span</span
+    >
     <transition name="mobile-nav">
       <ul class="mobile-nav" v-show="mobileNav">
         <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
@@ -84,20 +113,14 @@
 </template>
 
 <script>
-import menuIcon from "../../assets/Icons/bars-regular.svg";
-import userIcon from "../../assets/Icons/user-crown-light.svg";
-import signOutIcon from "../../assets/Icons/sign-out-alt-regular.svg";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default {
   name: "AppNavigation",
-  components: {
-    menuIcon,
-    userIcon,
-    signOutIcon,
-  },
+  components: {},
   data() {
     return {
+      activeIndex2: "1",
       mobile: null,
       mobileNav: null,
       windowWidth: null,
@@ -124,6 +147,9 @@ export default {
     this.checkScreen();
   },
   methods: {
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath);
+    },
     checkScreen() {
       this.windowWidth = window.innerWidth;
       if (this.windowWidth <= 750) {
@@ -158,8 +184,8 @@ export default {
 
 <style lang="scss" scoped>
 header {
-  background-color: #fff;
-  padding: 0 25px;
+  background-color: #545c64 !important;
+  // padding: 0 25px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 99;
@@ -174,7 +200,7 @@ header {
   }
   nav {
     display: flex;
-    padding: 35px 0;
+    padding: 20px 0;
 
     .branding {
       display: flex;

@@ -5,13 +5,12 @@
         <h2 v-if="post.welcomScreen">{{ post.title }}</h2>
         <h2 v-else>{{ post.title }}</h2>
         <p v-if="post.welcomScreen">{{ post.blogPost }}</p>
-        <p v-else class="contant-preview">{{ post.blogContent }}</p>
+        <!-- <p v-else class="contant-preview" v-html="post.description"></p> -->
+
         <router-link v-if="post.welcomScreen" class="link link-light" to="#">
-          Login/Register<ArrowRight class="arrow arrow-light"
-        /></router-link>
-        <router-link class="link" v-else to="#">
-          View The Post<ArrowRight class="arrow"
-        /></router-link>
+          Login/Register</router-link
+        >
+        <router-link class="link" v-else to="#"> View The Post</router-link>
       </div>
     </div>
     <div class="blogImg">
@@ -20,23 +19,36 @@
         :src="require(`../../assets/blogPhotos/${post.photo}.jpg`)"
         alt=""
       />
-      <img
-        v-else
+      <!-- <img
+        
         :src="require(`../../assets/blogPhotos/${post.blogCover}.jpg`)"
         alt=""
-      />
+      /> -->
+      <v-carousel v-else height="100%" :show-arrows="false">
+        <v-carousel-item
+          class="text-center"
+          v-for="(video, index) in post.media_url"
+          :key="index"
+        >
+          <Media
+            :kind="'video'"
+            :controls="true"
+            :src="[video.URL]"
+            :style="{ width: '100%', height: '100%' }"
+          >
+          </Media
+        ></v-carousel-item>
+      </v-carousel>
     </div>
   </div>
 </template>
 
 <script>
-import ArrowRight from "../../assets/Icons/arrow-right-light.svg";
+import Media from "@dongido/vue-viaudio";
 export default {
   name: "AppBlog",
   props: ["post"],
-  components: {
-    ArrowRight,
-  },
+  components: { Media },
 };
 </script>
 
@@ -117,6 +129,8 @@ export default {
     order: 1;
     flex: 3;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.082), 0 2px 4px -1px rgb(0, 0, 0);
+    background-image: url("../../assets/blogPhotos/blog4.jpg");
+    background-size: cover;
     @media (min-width: 700px) {
       order: 2;
     }

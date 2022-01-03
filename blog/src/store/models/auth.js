@@ -26,7 +26,7 @@ const actions = {
                     // Signed in
                     const user = userCredential.user;
 
-                    console.log(user.uid);
+                    console.log(user);
                     resolve(user.uid)
 
                 })
@@ -51,7 +51,8 @@ const actions = {
                     // Signed in
                     const user = userCredential.user;
 
-                    console.log(user.uid);
+                    console.log(user.accessToken);
+                    localStorage.setItem('accessToken', accessToken)
                     resolve(user.uid)
 
                 })

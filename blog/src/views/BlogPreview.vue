@@ -1,7 +1,7 @@
 <template>
   <div class="post-view">
     <div class="container-b quillWrapper">
-      <h2>{{}}</h2>
+      <h2></h2>
       <img src="" alt="" />
       <div class="post-content ql-editor" v-html="blogHTML"></div>
     </div>

@@ -1,13 +1,13 @@
 <template>
   <div class="home">
     <AppBlog :post="welcomScreen" />
-    <AppBlog v-for="(post, index) in simplBlog" :key="index" :post="post" />
+    <AppBlog v-for="(post, index) in blog_submited" :key="index" :post="post" />
     <div class="blog-card-wrap">
       <div class="container">
         <h3>View More Recent Blogs</h3>
         <div class="blog-cards">
           <AppBlogCard
-            v-for="(post, index) in sampleBlogCards"
+            v-for="(post, index) in blog_submited"
             :key="index"
             :post="post"
           />
@@ -20,6 +20,7 @@
 <script>
 import AppBlog from "@/components/blogs/AppBlog";
 import AppBlogCard from "@/components/blogs/AppBlogCard";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Home",
 
@@ -34,7 +35,7 @@ export default {
         blogPost:
           " Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam culpa magni, minima corporis nesciunt deleniti fugit officiis voluptatem maxime pariatur laudantium ipsum quaerat. Quisquam quo dolores pariatur officia ex doloremque?",
         welcomScreen: true,
-        photo: "coding",
+        photo: "blog3",
       },
       simplBlog: [
         {
@@ -54,10 +55,14 @@ export default {
       ],
     };
   },
+  methods: {
+    ...mapActions(["getBlogSubmited"]),
+  },
   computed: {
-    sampleBlogCards() {
-      return this.$store.state.sampleBlogCards;
-    },
+    ...mapGetters(["blog_submited"]),
+  },
+  created() {
+    this.getBlogSubmited();
   },
 };
 </script>
