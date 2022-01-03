@@ -219,6 +219,11 @@ const mutations = {
     updateSubmitFilde: (state) => state.blog_progression.submit = true,
     filterBlog: (state, data) => (state.blog_filter = data[0]),
     userBlogs: (state, data) => (state.blogs_user = data),
+    removeBlog: (state, data) => {
+        state.blog_submited.splice(state.blog_submited.indexOf(el => el.blogID == data), 1)
+        state.blogs_user.splice(state.blog_submited.indexOf(el => el.blogID == data), 1)
+
+    }
     // state.postsProblem.splice(state.postsProblem.findIndex(el => el.id == putPost.id), 1, putPost);
 }
 

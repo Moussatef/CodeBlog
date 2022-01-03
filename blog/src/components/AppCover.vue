@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="card_info">
+    <div v-if="auth_User" class="card_info">
       <div class="item_img">
         <img
           id="avatar"
@@ -33,13 +33,17 @@
 
           <span id="following" class="item_f">following : 25 K</span>
 
-          <span id="NB_repos" class="item_f"
+          <span id="NB_repos" v-if="blogs_user" class="item_f"
             >Blogs : {{ blogs_user.length }}</span
           >
         </div>
       </div>
     </div>
-    <div class="d-flex flex-wrap justify-content-evenly">
+    <vs-alert v-show="message_err" color="danger">
+      <template #title> Something went wrong</template>
+      {{ message_err }}
+    </vs-alert>
+    <div v-if="blogs_user" class="d-flex flex-wrap justify-content-evenly">
       <div v-for="(blog, bl) in blogs_user" :key="bl">
         <v-card
           :loading="loading"
@@ -95,7 +99,15 @@
               <v-btn class="" color="primary" fab small dark>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn class="ma-2" color="red" dark>
+              <v-btn
+                class="ma-2"
+                @click="
+                  active_confirmation = true;
+                  blog_delete_id = blog.blogID;
+                "
+                color="red"
+                dark
+              >
                 Delete
                 <v-icon dark right> mdi-cancel </v-icon>
               </v-btn>
@@ -104,6 +116,48 @@
         </v-card>
       </div>
     </div>
+    <!-- Dialog confirmation delete -->
+    <vs-dialog
+      width="550px"
+      prevent-close
+      not-center
+      v-model="active_confirmation"
+    >
+      <template #header>
+        <h4 class="not-margin">Confirmation for <b>Delete</b></h4>
+      </template>
+
+      <div class="con-content">
+        <p>Are you sure you want to delete this blog</p>
+      </div>
+
+      <template #footer>
+        <div class="con-footer">
+          <vs-button @click="removeBlog(blog_delete_id)" transparent>
+            Ok
+          </vs-button>
+          <vs-button @click="active_confirmation = false" dark transparent>
+            Cancel
+          </vs-button>
+        </div>
+      </template>
+    </vs-dialog>
+    <!--  dialog message finish delete blog -->
+    <vs-dialog width="550px" not-center v-model="active_remove">
+      <template #header>
+        <h4 class="not-margin">Welcome to <b>Vuesax</b></h4>
+      </template>
+
+      <div class="con-content">
+        <p>Bloge removed from with success!</p>
+      </div>
+
+      <template #footer>
+        <div class="con-footer">
+          <vs-button @click="active_remove = false" transparent> Ok </vs-button>
+        </div>
+      </template>
+    </vs-dialog>
   </div>
 </template>
 
@@ -116,6 +170,10 @@ export default {
   data() {
     return {
       loading: false,
+      active_remove: false,
+      active_confirmation: false,
+      blog_delete_id: null,
+      message_err: null,
     };
   },
   computed: {
@@ -130,7 +188,24 @@ export default {
       "getBlogSubmited",
     ]),
 
+    removeBlog(id) {
+      if (id) {
+        this.message_err = null;
+        this.$store
+          .dispatch("deleteBlog", id)
+          .then(() => {
+            this.active_remove = true;
+            this.active_confirmation = false;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.message_err = error;
+          });
+      }
+    },
+
     async getdata() {
+      this.message_err = null;
       this.$store
         .dispatch("getUserInfo")
         .then((res) => {
@@ -146,14 +221,22 @@ export default {
         })
         .catch((error) => {
           console.log(error);
+          this.message_err = error;
         });
     },
 
     getBlogsUser() {
-      this.$store.dispatch("getBlogSubmited").then((res) => {
-        this.userBlogsFilter(this.auth_User.user_id);
-        // console.log(this.blogs_user);
-      });
+      this.message_err = null;
+      this.$store
+        .dispatch("getBlogSubmited")
+        .then((res) => {
+          this.userBlogsFilter(this.auth_User.user_id);
+          // console.log(this.blogs_user);
+        })
+        .catch((error) => {
+          console.log(error);
+          this.message_err = error;
+        });
     },
   },
   created() {
