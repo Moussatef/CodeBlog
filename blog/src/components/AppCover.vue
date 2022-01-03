@@ -1,31 +1,5 @@
 <template>
   <div class="container">
-    <!-- <template>
-      <v-card class="mx-auto" max-width="804" tile>
-        <v-img height="300" src="@/assets/pic/blog.jpg">
-          <v-row align="end" class="">
-            <v-col align-self="start" class="pa-0" cols="12">
-              <v-avatar class="profile" color="white" size="160" tile>
-                <v-img src="@/assets/pic/pr2.png"></v-img>
-              </v-avatar>
-            </v-col>
-            <v-col class="py-0 mt-5">
-              <v-list-item color="rgba(0, 0, 0, .4)" dark>
-                <v-list-item-content>
-                  <v-list-item-title class="text-h3">
-                    {{ auth_User.first_name }} {{ auth_User.last_name }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="text-h6">{{
-                    auth_User.email
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-col>
-          </v-row>
-        </v-img>
-      </v-card>
-    </template> -->
-
     <div class="card_info">
       <div class="item_img">
         <img
@@ -59,8 +33,75 @@
 
           <span id="following" class="item_f">following : 25 K</span>
 
-          <span id="NB_repos" class="item_f">Blogs :</span>
+          <span id="NB_repos" class="item_f"
+            >Blogs : {{ blogs_user.length }}</span
+          >
         </div>
+      </div>
+    </div>
+    <div class="d-flex flex-wrap justify-content-evenly">
+      <div v-for="(blog, bl) in blogs_user" :key="bl">
+        <v-card
+          :loading="loading"
+          class="mx-auto my-12"
+          max-width="374"
+          width="374"
+        >
+          <template slot="progress">
+            <v-progress-linear
+              color="deep-purple"
+              height="10"
+              indeterminate
+            ></v-progress-linear>
+          </template>
+
+          <v-carousel height="250" class="img" :show-arrows="false">
+            <v-carousel-item
+              class="text-center"
+              v-for="(video, index) in blog.media_url"
+              :key="index"
+            >
+              <Media
+                :kind="'video'"
+                :controls="true"
+                :src="[video.URL]"
+                :style="{ width: '100%', height: '200px' }"
+              >
+              </Media
+            ></v-carousel-item>
+          </v-carousel>
+
+          <v-card-title>{{ blog.title }}</v-card-title>
+
+          <v-divider class="mx-4"></v-divider>
+
+          <v-card-text>Created at : {{ blog.created_at }}</v-card-text>
+
+          <v-card-actions>
+            <router-link
+              class="link"
+              :to="{
+                name: 'BlogPreview',
+                params: { id: blog.blogID },
+              }"
+              ><v-btn color="deep-purple lighten-2" text>
+                View Blog
+              </v-btn></router-link
+            >
+          </v-card-actions>
+          <v-card-text style="height: 80px; position: relative">
+            <v-fab-transition> </v-fab-transition>
+            <div class="my-2">
+              <v-btn class="" color="primary" fab small dark>
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn class="ma-2" color="red" dark>
+                Delete
+                <v-icon dark right> mdi-cancel </v-icon>
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
       </div>
     </div>
   </div>
@@ -72,12 +113,22 @@ import { getAuth } from "firebase/auth";
 
 export default {
   name: "Home",
+  data() {
+    return {
+      loading: false,
+    };
+  },
   computed: {
-    ...mapGetters(["auth_User"]),
+    ...mapGetters(["auth_User", "blogs_user"]),
   },
   components: {},
   methods: {
-    ...mapActions(["sendData", "getUserInfo"]),
+    ...mapActions([
+      "sendData",
+      "getUserInfo",
+      "userBlogsFilter",
+      "getBlogSubmited",
+    ]),
 
     async getdata() {
       this.$store
@@ -87,6 +138,7 @@ export default {
 
           if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
+            const user_data = docSnap.data();
           } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
@@ -96,8 +148,16 @@ export default {
           console.log(error);
         });
     },
+
+    getBlogsUser() {
+      this.$store.dispatch("getBlogSubmited").then((res) => {
+        this.userBlogsFilter(this.auth_User.user_id);
+        // console.log(this.blogs_user);
+      });
+    },
   },
   created() {
+    this.getBlogsUser();
     this.getdata();
   },
 };

@@ -45,7 +45,7 @@
             :kind="'video'"
             :controls="true"
             :src="[video.URL]"
-            :style="{ width: '100%', height: '100%' }"
+            :style="{ width: '100%', height: '93%' }"
           >
           </Media
         ></v-carousel-item>

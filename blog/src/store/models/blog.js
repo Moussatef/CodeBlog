@@ -10,13 +10,15 @@ import {
     updateDoc,
     query,
     where,
-    getDocs
+    getDocs,
+    deleteDoc
 } from "firebase/firestore";
 
 const state = {
     blog_progression: [],
     blog_submited: [],
     blog_filter: null,
+    blogs_user: null,
 
 }
 
@@ -24,6 +26,7 @@ const getters = {
     blog_progression: state => state.blog_progression,
     blog_submited: state => state.blog_submited,
     blog_filter: state => state.blog_filter,
+    blogs_user: state => state.blogs_user,
 
 }
 
@@ -141,30 +144,26 @@ const actions = {
         let blogTable = []
         // const docRef = collection(db, "blogSubmited");
         const querySnapshot = await getDocs(collection(db, "blogSubmited"));
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
-            const blogInfo = doc.data()
-            blogTable.push(blogInfo)
+        querySnapshot
 
+        return new Promise((resolve, reject) => {
+            getDocs(collection(db, "blogSubmited")).then(
+                result => {
+                    result.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        // console.log(doc.id, " => ", doc.data());
+                        const blogInfo = doc.data()
+                        blogTable.push(blogInfo)
+                    });
+                    commit("setAllBlogs", blogTable)
+                    resolve(blogTable)
+                }
+            ).catch(error => {
+                console.log(error);
+                reject(error)
+            })
 
-
-        });
-        commit("setAllBlogs", blogTable)
-        // return new Promise((resolve, reject) => {
-        //     getDoc(docRef).then(
-        //         result => {
-        //             console.log(result.data());
-        //             const data = result.data()
-        //             commit("addProgresBlog", data)
-        //             resolve(data)
-        //         }
-        //     ).catch(error => {
-        //         console.log(error);
-        //         reject(error)
-        //     })
-
-        // })
+        })
     },
 
     async filterBlog({
@@ -175,8 +174,41 @@ const actions = {
             return result.blogID === id;
         });
         commit("filterBlog", blogf)
-        console.log(blogf);
-    }
+        // console.log(blogf);
+    },
+
+    async userBlogsFilter({
+        commit
+    }, id) {
+
+        const blogf = await state.blog_submited.filter((result) => {
+            return result.user_id === id;
+        });
+        commit("userBlogs", blogf)
+        // console.log(blogf);
+
+    },
+
+    deleteBlog({
+        commit
+    }, id) {
+        const db = getFirestore();
+        return new Promise((resolve, reject) => {
+            deleteDoc(doc(db, "blogSubmited", id)).then(
+                result => {
+                    console.log(result);
+                    commit("removeBlog", id)
+                    resolve(result)
+                }
+            ).catch(error => {
+                console.log(error);
+                reject(error)
+            })
+
+        })
+    },
+
+
 
 }
 
@@ -186,7 +218,7 @@ const mutations = {
     addBlogSubmited: (state, data) => (state.blog_submited.push(data)),
     updateSubmitFilde: (state) => state.blog_progression.submit = true,
     filterBlog: (state, data) => (state.blog_filter = data[0]),
-    userBlogs: (state, data) => (state.blog_filter = data),
+    userBlogs: (state, data) => (state.blogs_user = data),
     // state.postsProblem.splice(state.postsProblem.findIndex(el => el.id == putPost.id), 1, putPost);
 }
 
