@@ -56,16 +56,6 @@ const routes = [
     path: '/blogs',
     name: 'Blogs',
     component: Blogs,
-
-    beforeEnter: (to, from, next) => {
-      getAuth().onAuthStateChanged((user) => {
-        if (!user) {
-          next('/login');
-        } else {
-          next();
-        }
-      })
-    },
     meta: {
       title: "Blogs",
     }

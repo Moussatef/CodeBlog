@@ -235,7 +235,14 @@ const actions = {
                 reject(error)
             })
         })
+    },
+
+    removeMedia({
+        commit
+    }, data) {
+        commit("removeMedia", data.URL)
     }
+
 
 }
 
@@ -251,6 +258,11 @@ const mutations = {
     removeBlog: (state, data) => {
         state.blog_submited.splice(state.blog_submited.indexOf(el => el.blogID == data), 1)
         state.blogs_user.splice(state.blog_submited.indexOf(el => el.blogID == data), 1)
+
+    },
+    removeMedia: (state, data) => {
+        const indexMedia = state.blog_progression.media_url.indexOf(el => el.URL == data)
+        state.blog_progression.media_url.splice(indexMedia, 1)
 
     },
 

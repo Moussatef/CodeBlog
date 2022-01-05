@@ -3,57 +3,22 @@
     <div class="blog-content">
       <div>
         <h2 v-if="post.welcomScreen">{{ post.title }}</h2>
-        <h2 v-else>{{ post.title }}</h2>
+
         <p v-if="post.welcomScreen">{{ post.blogPost }}</p>
         <!-- <p v-else class="contant-preview" v-html="post.description"></p> -->
 
         <router-link
           v-if="post.welcomScreen"
           v-show="!isLogged"
-          class="link link-light"
+          class="link"
           :to="{ name: 'Login' }"
         >
           Login/Register</router-link
-        >
-        <router-link
-          class="link"
-          v-else
-          :to="{ name: 'BlogPreview', params: { id: this.post.blogID } }"
-        >
-          View The Post</router-link
         >
       </div>
     </div>
     <div v-if="post.welcomScreen" class="blogImg">
       <img :src="require(`../../assets/blogPhotos/${post.photo}.jpg`)" alt="" />
-      <!-- <img
-        
-        :src="require(`../../assets/blogPhotos/${post.blogCover}.jpg`)"
-        alt=""
-      /> -->
-    </div>
-    <div class="blogImg" v-else>
-      <v-carousel
-        v-if="post.media_url.length > 0"
-        height="100%"
-        :show-arrows="false"
-      >
-        <v-carousel-item
-          class="text-center"
-          v-for="(video, index) in post.media_url"
-          :key="index"
-        >
-          <Media
-            :kind="'video'"
-            :controls="true"
-            :src="[video.URL]"
-            :style="{ width: '100%', height: '93%' }"
-          >
-          </Media
-        ></v-carousel-item>
-      </v-carousel>
-
-      <img v-else src="@/assets/blogPhotos/blogH.png" />
     </div>
   </div>
 </template>

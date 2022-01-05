@@ -77,12 +77,14 @@
         ><el-menu-item index="6">Login</el-menu-item></router-link
       >
 
-      <el-submenu index="6">
+      <el-submenu v-if="isLogged" index="6">
         <template slot="title">Dashboard</template>
         <router-link class="link" v-if="isLogged" :to="{ name: 'Dashboard' }">
           <el-menu-item index="2-1">Profile</el-menu-item>
         </router-link>
-        <el-menu-item index="2-2" @click="logout()">Log Out</el-menu-item>
+        <el-menu-item index="2-2" v-if="isLogged" @click="logout()"
+          >Log Out</el-menu-item
+        >
       </el-submenu>
     </el-menu>
 

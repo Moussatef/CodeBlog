@@ -34,7 +34,7 @@
 import { mapActions, mapGetters } from "vuex";
 import Media from "@dongido/vue-viaudio";
 export default {
-  // name: "BlogPreview",
+  name: "BlogPreview",
   data() {
     return {
       blog: null,
@@ -51,14 +51,9 @@ export default {
   methods: {
     ...mapActions(["filterBlog", "getBlogSubmited"]),
   },
-  created() {
-    // console.log("TESSSST");
-  },
+  created() {},
 
   beforeMount() {
-    // this.blog = this.blog_submited.filter((result) => {
-    //   return result.blogID === this.$route.params.id;
-    // });
     this.getBlogSubmited();
     this.filterBlog(this.$route.params.id);
   },

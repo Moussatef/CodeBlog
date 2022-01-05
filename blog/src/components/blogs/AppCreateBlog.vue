@@ -140,6 +140,7 @@
                       <v-card-actions class="white justify-center">
                         <v-btn
                           v-if="blog_progression.media_url.length > 1"
+                          @click="deletMedia(card)"
                           color="indigo"
                           class="white--text"
                           fab
@@ -304,7 +305,16 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getUserInfo", "createBlogProgression", "stopUpload"]),
+    ...mapActions([
+      "getUserInfo",
+      "createBlogProgression",
+      "stopUpload",
+      "removeMedia",
+    ]),
+
+    deletMedia(media) {
+      this.removeMedia(media);
+    },
 
     imageHandler(file, Editor, cursorLocation, resetUploader) {
       const storage = getStorage();

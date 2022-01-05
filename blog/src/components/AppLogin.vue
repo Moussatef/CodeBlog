@@ -1,9 +1,5 @@
 <template>
   <div>
-    <vs-alert v-if="messageError" color="danger">
-      <template #title> Warning Message </template>
-      {{ messageError }}
-    </vs-alert>
     <v-container class="">
       <v-row class="text-center justify-center p-5">
         <v-col md="5">
@@ -13,16 +9,11 @@
           <template>
             <h4 class="not-margin mb-5"><b>Login for continue</b></h4>
           </template>
+          <vs-alert v-if="messageError" color="danger">
+            <template #title> Warning Message </template>
+            {{ messageError }}
+          </vs-alert>
 
-          <template #footer>
-            <div class="footer-dialog">
-              <vs-button block> Sign In </vs-button>
-
-              <div class="new">
-                New Here? <a href="#">Create New Account</a>
-              </div>
-            </div>
-          </template>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="email"
