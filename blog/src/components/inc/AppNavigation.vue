@@ -1,53 +1,5 @@
 <template>
   <header>
-    <!-- <div class="nav-links">
-        <ul v-show="!mobile">
-          <div v-if="!isLogged">
-            <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
-            <router-link class="link" :to="{ name: 'Login' }"
-              >Login</router-link
-            >
-            <router-link class="link" :to="{ name: 'Register' }"
-              >Register</router-link
-            >
-          </div>
-          <div v-else>
-            <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
-            <router-link class="link" :to="{ name: 'Blogs' }"
-              >Blogs</router-link
-            >
-            <router-link class="link" :to="{ name: 'CreateBlog' }"
-              >Crate Blog</router-link
-            >
-          </div>
-        </ul>
-
-        <div v-if="isLogged" class="profile" @click="toggleMenu" ref="profile">
-          <span>MS</span>
-          <div class="profile-menu" v-show="profileMenu">
-            <div class="info">
-              <p class="initials">MS</p>
-              <div class="right">
-                <p>Moussatef Othman</p>
-                <p>Othman.moussatef@gmail.com</p>
-                <p></p>
-              </div>
-            </div>
-            <div class="options">
-              <div class="option">
-                <router-link class="option" :to="{ name: 'Dashboard' }">
-                  <p>Dashboard</p>
-                </router-link>
-              </div>
-              <div @click="logout()" class="option">
-                <span class="option">
-                  <p>Sign Out</p>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
     <el-menu
       v-if="!mobile"
       :default-active="activeIndex2"
@@ -89,26 +41,27 @@
     </el-menu>
 
     <span @click="mobileNav = !mobileNav" v-show="mobile" class="menu-icon"
-      >span</span
-    >
+      ><i class="bi bi-filter-right"></i
+    ></span>
     <transition name="mobile-nav">
       <ul class="mobile-nav" v-show="mobileNav">
         <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
 
-        <div v-if="!isLogged">
-          <router-link class="link" :to="{ name: 'CreateBlog' }"
-            >Login</router-link
-          >
-          <router-link class="link" :to="{ name: 'CreateBlog' }"
-            >Register</router-link
-          >
-        </div>
-        <div v-else>
-          <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-          <router-link class="link" :to="{ name: 'CreateBlog' }"
-            >Crate Blog</router-link
-          >
-        </div>
+        <router-link v-if="!isLogged" class="link" :to="{ name: 'Login' }"
+          >Login</router-link
+        >
+        <router-link v-if="!isLogged" class="link" :to="{ name: 'Register' }"
+          >Register</router-link
+        >
+
+        <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
+        <router-link v-if="isLogged" class="link" :to="{ name: 'CreateBlog' }"
+          >Crate Blog</router-link
+        >
+        <router-link class="link" v-if="isLogged" :to="{ name: 'Dashboard' }"
+          >Profile</router-link
+        >
+        <botton class="link" v-if="isLogged" @click="logout()">Log Out</botton>
       </ul>
     </transition>
   </header>

@@ -99,8 +99,8 @@ export default {
     ...mapGetters(["blog_submited", "auth_User"]),
   },
   created() {
-    this.getUserInfo();
     this.getBlogSubmited();
+    this.getUserInfo();
   },
   watch: {
     auth_User: function (value) {
