@@ -24,18 +24,20 @@
         >
       </div>
     </div>
-    <div class="blogImg">
-      <img
-        v-if="post.welcomScreen"
-        :src="require(`../../assets/blogPhotos/${post.photo}.jpg`)"
-        alt=""
-      />
+    <div v-if="post.welcomScreen" class="blogImg">
+      <img :src="require(`../../assets/blogPhotos/${post.photo}.jpg`)" alt="" />
       <!-- <img
         
         :src="require(`../../assets/blogPhotos/${post.blogCover}.jpg`)"
         alt=""
       /> -->
-      <v-carousel v-else height="100%" :show-arrows="false">
+    </div>
+    <div class="blogImg" v-else>
+      <v-carousel
+        v-if="post.media_url.length > 0"
+        height="100%"
+        :show-arrows="false"
+      >
         <v-carousel-item
           class="text-center"
           v-for="(video, index) in post.media_url"
@@ -50,6 +52,8 @@
           </Media
         ></v-carousel-item>
       </v-carousel>
+
+      <img v-else src="@/assets/blogPhotos/blogH.png" />
     </div>
   </div>
 </template>
@@ -139,7 +143,7 @@ export default {
   .blogImg {
     order: 1;
     flex: 3;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.082), 0 2px 4px -1px rgb(0, 0, 0);
+
     background-image: url("../../assets/blogPhotos/blog4.jpg");
     background-size: cover;
     @media (min-width: 700px) {

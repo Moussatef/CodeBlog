@@ -9,7 +9,11 @@
       <!-- </div> -->
     </div>
 
-    <v-carousel height="320" :show-arrows="false">
+    <v-carousel
+      v-if="post.media_url.length > 0"
+      height="320"
+      :show-arrows="false"
+    >
       <v-carousel-item
         class="text-center"
         v-for="(video, index) in post.media_url"
@@ -24,6 +28,7 @@
         </Media
       ></v-carousel-item>
     </v-carousel>
+    <img v-else src="@/assets/blogPhotos/blc.png" />
     <div class="info">
       <h4>{{ post.title }}</h4>
       <h6>Postef on : {{ post.created_at }}</h6>

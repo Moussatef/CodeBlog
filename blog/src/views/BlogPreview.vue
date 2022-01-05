@@ -3,7 +3,12 @@
     <div class="post-preview">
       <div class="container-b quillWrapper">
         <h2>{{ blog.title }}</h2>
-        <v-carousel height="340" class="img" :show-arrows="false">
+        <v-carousel
+          v-if="blog.media_url.length > 0"
+          height="340"
+          class="img"
+          :show-arrows="false"
+        >
           <v-carousel-item
             class="text-center"
             v-for="(video, index) in blog.media_url"
@@ -18,6 +23,7 @@
             </Media
           ></v-carousel-item>
         </v-carousel>
+        <v-img v-else height="250" src="@/assets/blogPhotos/blc.png"></v-img>
         <div class="post-content ql-editor" v-html="blog.description"></div>
       </div>
     </div>

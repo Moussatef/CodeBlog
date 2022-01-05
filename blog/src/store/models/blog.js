@@ -159,7 +159,7 @@ const actions = {
                     resolve(blogTable)
                 }
             ).catch(error => {
-                console.log(error);
+                // console.log(error);
                 reject(error)
             })
 
@@ -208,11 +208,40 @@ const actions = {
         })
     },
 
+    updateBlog({
+        commit
+    }, data) {
+        const db = getFirestore();
+        const blog = {
+            blogID: data.id,
+            title: data.title,
+            description: data.description,
+        }
 
+        const documentRef = doc(db, "blogSubmited", data.blogID);
+
+        return new Promise((resolve, reject) => {
+            updateDoc(documentRef, {
+                title: data.title,
+                description: data.description,
+            }).then(
+                result => {
+                    console.log(result);
+                    commit("updateBlog", data)
+                    resolve(result)
+                }
+            ).catch(error => {
+                console.log(error);
+                reject(error)
+            })
+        })
+    }
 
 }
 
+
 const mutations = {
+
     setAllBlogs: (state, data) => (state.blog_submited = data),
     addProgresBlog: (state, data) => (state.blog_progression = data),
     addBlogSubmited: (state, data) => (state.blog_submited.push(data)),
@@ -222,6 +251,12 @@ const mutations = {
     removeBlog: (state, data) => {
         state.blog_submited.splice(state.blog_submited.indexOf(el => el.blogID == data), 1)
         state.blogs_user.splice(state.blog_submited.indexOf(el => el.blogID == data), 1)
+
+    },
+
+    updateBlog: (state, data) => {
+        state.blog_submited.splice(state.blog_submited.indexOf(el => el.blogID == data.blogID), 1, data)
+        state.blogs_user.splice(state.blog_submited.indexOf(el => el.blogID == data.blogID), 1, data)
 
     }
     // state.postsProblem.splice(state.postsProblem.findIndex(el => el.id == putPost.id), 1, putPost);

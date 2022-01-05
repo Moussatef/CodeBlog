@@ -59,7 +59,12 @@
             ></v-progress-linear>
           </template>
 
-          <v-carousel height="250" class="img" :show-arrows="false">
+          <v-carousel
+            v-if="blog.media_url.length > 0"
+            height="250"
+            class="img"
+            :show-arrows="false"
+          >
             <v-carousel-item
               class="text-center"
               v-for="(video, index) in blog.media_url"
@@ -74,6 +79,7 @@
               </Media
             ></v-carousel-item>
           </v-carousel>
+          <v-img v-else height="250" src="@/assets/blogPhotos/blc.png"></v-img>
 
           <v-card-title>{{ blog.title }}</v-card-title>
 
@@ -96,7 +102,17 @@
           <v-card-text style="height: 80px; position: relative">
             <v-fab-transition> </v-fab-transition>
             <div class="my-2">
-              <v-btn class="" color="primary" fab small dark>
+              <v-btn
+                @click="
+                  blog_ToUpdate = blog;
+                  dialog_update = true;
+                "
+                class=""
+                color="primary"
+                fab
+                small
+                dark
+              >
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
               <v-btn
@@ -145,16 +161,24 @@
     <!--  dialog message finish delete blog -->
     <vs-dialog width="550px" not-center v-model="active_remove">
       <template #header>
-        <h4 class="not-margin">Welcome to <b>Vuesax</b></h4>
+        <h4 class="not-margin">Message <b>Success</b></h4>
       </template>
 
       <div class="con-content">
-        <p>Bloge removed from with success!</p>
+        <p>{{ message_success }}</p>
       </div>
 
       <template #footer>
         <div class="con-footer">
-          <vs-button @click="active_remove = false" transparent> Ok </vs-button>
+          <vs-button
+            @click="
+              active_remove = false;
+              dialog_update = false;
+            "
+            transparent
+          >
+            Ok
+          </vs-button>
         </div>
       </template>
     </vs-dialog>
@@ -163,36 +187,47 @@
     <template>
       <v-row justify="center">
         <v-dialog
-          v-model="dialog"
+          v-model="dialog_update"
           fullscreen
           hide-overlay
           transition="dialog-bottom-transition"
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark v-bind="attrs" v-on="on">
-              Open Dialog
-            </v-btn>
-          </template>
-          <v-card>
+          <v-card v-if="blog_ToUpdate">
             <v-toolbar dark color="primary">
-              <v-btn icon dark @click="dialog = false">
+              <v-btn icon dark @click="dialog_update = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
               <v-toolbar-title>Settings</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-toolbar-items>
-                <v-btn dark text @click="dialog = false"> Save </v-btn>
+                <v-btn dark text @click="updateBlog(blog_ToUpdate)">
+                  Save
+                </v-btn>
               </v-toolbar-items>
             </v-toolbar>
             <v-list three-line subheader>
-              <v-subheader>User Controls</v-subheader>
+              <v-subheader>BLog Content</v-subheader>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>Content filtering</v-list-item-title>
-                  <v-list-item-subtitle
-                    >Set the content filtering level to restrict apps that can
-                    be downloaded</v-list-item-subtitle
-                  >
+                  <v-list-item-title class="my-3">Blog Title</v-list-item-title>
+                  <v-list-item-subtitle>
+                    <v-text-field
+                      v-model="blog_ToUpdate.title"
+                      label="Blog Title*"
+                      required
+                    ></v-text-field>
+                  </v-list-item-subtitle>
+
+                  <v-list-item-subtitle>
+                    <div class="editor">
+                      <vue-editor
+                        :editorOptions="editorSettings"
+                        v-model="blog_ToUpdate.description"
+                        useCustomImageHandler
+                        @image-added="imageHandler"
+                      />
+                    </div>
+                  </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -203,22 +238,38 @@
     </template>
   </div>
 </template>
-  </div>
-</template>
+
 
 <script>
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { mapActions, mapGetters } from "vuex";
-import { getAuth } from "firebase/auth";
+import Quill from "quill";
+window.Quill = Quill;
+const ImageResize = require("quill-image-resize-module").default;
+Quill.register("modules/imageResize", ImageResize);
 
 export default {
   name: "Home",
   data() {
     return {
+      message_success: null,
+      dialog_update: false,
       loading: false,
       active_remove: false,
       active_confirmation: false,
       blog_delete_id: null,
+      blog_ToUpdate: null,
       message_err: null,
+      editorSettings: {
+        modules: {
+          imageResize: {},
+        },
+      },
     };
   },
   computed: {
@@ -233,12 +284,80 @@ export default {
       "getBlogSubmited",
     ]),
 
+    updateBlog(blog) {
+      if (blog.title.length > 0 && blog.description.length > 0) {
+        this.$store
+          .dispatch("updateBlog", blog)
+          .then((result) => {
+            console.log(result);
+            this.message_success = "Bloge updated with success!";
+            this.active_remove = true;
+          })
+          .catch((error) => {
+            this.message_err = error;
+            this.dialog_update = false;
+          });
+      }
+    },
+
+    imageHandler(file, Editor, cursorLocation, resetUploader) {
+      const storage = getStorage();
+      const storageRef = ref(
+        storage,
+        "blogeMedia/" + Date.now() + "_" + file.name
+      );
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+          // console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case "paused":
+              // console.log('Upload is paused');
+              break;
+            case "running":
+              // console.log('Upload is running');
+              break;
+          }
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          console.log(error);
+        },
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        () =>
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              // console.log('File available at ', downloadURL);
+              // console.log(uploadTask.snapshot.ref.fullPath);
+              const info = {
+                path: uploadTask.snapshot.ref.fullPath,
+                url: downloadURL,
+              };
+
+              Editor.insertEmbed(cursorLocation, "image", downloadURL);
+              resetUploader();
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+      );
+    },
+
     removeBlog(id) {
       if (id) {
         this.message_err = null;
         this.$store
           .dispatch("deleteBlog", id)
           .then(() => {
+            this.message_success = "Bloge removed with success!";
             this.active_remove = true;
             this.active_confirmation = false;
           })
@@ -265,7 +384,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
           this.message_err = error;
         });
     },
@@ -279,12 +398,12 @@ export default {
           // console.log(this.blogs_user);
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
           this.message_err = error;
         });
     },
   },
-  created() {
+  beforeMount() {
     this.getBlogsUser();
     this.getdata();
   },
