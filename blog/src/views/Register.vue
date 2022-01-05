@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1 class="text-center">Register Form</h1>
     <AppRegister />
   </div>
 </template>

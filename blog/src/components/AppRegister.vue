@@ -3,6 +3,7 @@
     <v-container class="">
       <v-row class="text-center justify-center p-5">
         <v-col md="5">
+          <h4 class="text-center mt-10">Register Form</h4>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="first_name"
