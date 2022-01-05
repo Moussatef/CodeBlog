@@ -197,7 +197,7 @@
               <v-btn icon dark @click="dialog_update = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
-              <v-toolbar-title>Settings</v-toolbar-title>
+              <v-toolbar-title>Update Blog Content</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-toolbar-items>
                 <v-btn dark text @click="updateBlog(blog_ToUpdate)">

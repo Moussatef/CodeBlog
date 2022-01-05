@@ -217,7 +217,7 @@
       <v-row justify="center">
         <v-dialog v-model="dialog" max-width="490">
           <v-card>
-            <v-card-title class="text-h5"> Messgae successfully. </v-card-title>
+            <v-card-title class="text-h5"> Messgae Success. </v-card-title>
 
             <v-card-text> File successfully uploaded ! </v-card-text>
 
@@ -234,7 +234,7 @@
       <!-- dialog confirm submit -->
       <vs-dialog width="550px" not-center v-model="active_submission">
         <template #header>
-          <h4 class="not-margin">Welcome to <b>Vuesax</b></h4>
+          <h4 class="not-margin">Message <b>Success</b></h4>
         </template>
 
         <div class="con-content">
