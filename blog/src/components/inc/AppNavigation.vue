@@ -44,7 +44,7 @@
       ><i class="bi bi-filter-right"></i
     ></span>
     <transition name="mobile-nav">
-      <ul class="mobile-nav" v-show="mobileNav">
+      <ul class="mobile-nav" @click="mobileNav = !mobileNav" v-show="mobileNav">
         <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
 
         <router-link v-if="!isLogged" class="link" :to="{ name: 'Login' }"

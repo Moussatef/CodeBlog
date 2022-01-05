@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h1 class="text-center text-uppercase text-muted">
-      Welcom back to BLOG channel
-    </h1>
+  <div class="mt-8">
     <AppCover />
   </div>
 </template>

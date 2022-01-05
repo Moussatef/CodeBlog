@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div v-if="auth_User" class="card_info">
+    <div v-if="auth_User" class="card_info d-flex flex-wrap">
       <div class="item_img">
         <img
           id="avatar"
@@ -412,14 +412,12 @@ export default {
 
 <style lang="scss" scoped>
 .card_info {
-  width: 110%;
   display: flex;
   margin-top: 40px;
   flex-wrap: wrap;
   justify-content: center;
 
   .item_img {
-    width: 30%;
     text-align: center;
     align-items: center;
     #avatar {
@@ -439,15 +437,22 @@ export default {
     width: 70%;
 
     .username {
-      margin: 50px 50px 30px 50px;
+      margin-top: 50px;
+      @media screen and (max-width: 500px) {
+        text-align: center;
+        margin-top: 20px;
+      }
     }
     .item_follow {
-      margin: 10px 50px 50px 100px;
+      margin-top: 50px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: flex-start;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      @media screen and (max-width: 500px) {
+        margin-top: 20px;
+      }
 
       .item_f {
         margin-left: 10px;
